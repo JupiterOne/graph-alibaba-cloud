@@ -57,14 +57,8 @@ async function verifyAuthentication(config: IntegrationConfig): Promise<void> {
     apiVersion: '2014-05-26',
   });
 
-  await client.request(
-    'DescribeInstances',
-    {
-      RegionId: 'us-east-1',
-      PageSize: 1,
-    },
-    {
-      timeout: 10000,
-    },
-  );
+  await client.request('DescribeInstances', {
+    RegionId: 'us-east-1',
+    PageSize: 1,
+  });
 }

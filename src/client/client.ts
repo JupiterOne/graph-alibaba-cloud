@@ -37,12 +37,13 @@ export class ServiceClient {
       return await cb();
     } catch (error) {
       const statusCode = error.entry?.response?.statusCode;
-      if (error.HttpCode === 403) {
+      if (statusCode === 403) {
         throw new IntegrationProviderAuthorizationError({
           endpoint: error.url,
           cause: error,
           status: statusCode,
           statusText: error.message,
+          message: error.message,
         });
       }
       throw new IntegrationProviderAPIError({
@@ -51,6 +52,7 @@ export class ServiceClient {
         code: error.code,
         status: statusCode,
         statusText: error.message,
+        message: error.message,
       });
     }
   }

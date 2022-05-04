@@ -67,21 +67,8 @@ export interface Instance {
   InnerIpAddress?: {
     IpAddress: string[];
   };
-  VpcAttributes?: {
-    VpcId?: string;
-    NatIpAddress?: string;
-    VSwitchId?: string;
-    PrivateIpAddress?: {
-      IpAddress?: string[];
-    };
-  };
-  EipAddress?: {
-    IsSupportUnassociate?: boolean;
-    InternetChargeType?: string;
-    IpAddress?: string;
-    Bandwidth?: number;
-    AllocationId?: string;
-  };
+  VpcAttributes?: VPCAttributes;
+  EipAddress?: EipAddress;
   HibernationOptions?: {
     Configured?: boolean;
   };
@@ -136,4 +123,21 @@ interface LockReason {
 interface Tag {
   TagValue?: string;
   TagKey?: string;
+}
+
+interface VPCAttributes {
+  VpcId?: string;
+  NatIpAddress?: string;
+  VSwitchId?: string;
+  PrivateIpAddress?: {
+    IpAddress?: string[];
+  };
+}
+
+interface EipAddress {
+  IsSupportUnassociate?: boolean;
+  InternetChargeType?: string;
+  IpAddress?: string;
+  Bandwidth?: number;
+  AllocationId?: string;
 }
