@@ -43,7 +43,6 @@ export class ServiceClient {
           cause: error,
           status: statusCode,
           statusText: error.message,
-          message: error.message,
         });
       }
       throw new IntegrationProviderAPIError({
