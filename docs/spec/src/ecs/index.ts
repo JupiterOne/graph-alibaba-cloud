@@ -8,7 +8,7 @@ export const ecsSpec: StepSpec<IntegrationConfig>[] = [
     entities: [
       {
         resourceName: 'ECS Instance',
-        _type: 'ecs_instance',
+        _type: 'alibaba_cloud_ecs_instance',
         _class: ['Host'],
       },
     ],

@@ -1,4 +1,11 @@
-export type ECSActions = 'DescribeInstances';
+import { Request } from '../../../../client/types/request';
+
+export interface ECSRequest extends Request<ECSParameters> {
+  action: ECSAction;
+}
+
+export type ECSAction = 'DescribeInstances';
+export type ECSParameters = DescribeInstancesParameters;
 
 export interface DescribeInstancesParameters {
   RegionId: string;

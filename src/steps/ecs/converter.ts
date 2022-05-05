@@ -27,7 +27,7 @@ export function createECSInstanceEntity(instance: Instance): Entity {
   let ipAddress: string | undefined;
   let privateIpAddress: string | undefined;
   let macAddress: string | undefined;
-  instance.NetworkInterfaces?.NetworkInterface.forEach((networkInterface) => {
+  instance.NetworkInterfaces?.NetworkInterface?.forEach((networkInterface) => {
     if (networkInterface.Type && networkInterface.Type === 'Primary') {
       macAddress = networkInterface.MacAddress;
       ipAddress = networkInterface.PrimaryIpAddress;

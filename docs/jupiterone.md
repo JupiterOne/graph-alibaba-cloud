@@ -96,9 +96,9 @@ https://github.com/JupiterOne/sdk/blob/main/docs/integrations/development.md
 
 The following entities are created:
 
-| Resources    | Entity `_type` | Entity `_class` |
-| ------------ | -------------- | --------------- |
-| ECS Instance | `ecs_instance` | `Host`          |
+| Resources    | Entity `_type`               | Entity `_class` |
+| ------------ | ---------------------------- | --------------- |
+| ECS Instance | `alibaba_cloud_ecs_instance` | `Host`          |
 
 <!--
 ********************************************************************************

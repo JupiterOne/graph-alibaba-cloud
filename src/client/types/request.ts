@@ -1,12 +1,10 @@
 import RPCClient from '@alicloud/pop-core';
-import { ECSActions } from '../../steps/ecs/client/types/request';
 
-export type Action = ECSActions;
 export type Method = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
 
 export interface Request<T> {
   client: RPCClient;
-  action: Action;
+  action: string;
   parameters: T;
   options?: RequestOptions;
 }

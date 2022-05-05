@@ -4,7 +4,7 @@ import { IntegrationConfig } from '../../../config';
 import { DescribeInstancesResponse } from './types/response';
 import { Instance } from '../types';
 import { RegionalServiceClient } from '../../../client/regionalClient';
-import { DescribeInstancesParameters } from './types/request';
+import { DescribeInstancesParameters, ECSRequest } from './types/request';
 import { ECS_REGIONS } from '../../../regions';
 import { IntegrationLogger } from '@jupiterone/integration-sdk-core';
 
@@ -33,16 +33,17 @@ export class ECSClient extends RegionalServiceClient {
       return this.forEachPage(async (nextToken?: string) => {
         const parameters: DescribeInstancesParameters = {
           RegionId: region,
-          PageNumber: nextToken ? undefined : 1,
           PageSize: 50,
           NextToken: nextToken,
         };
 
-        const response = await this.request<DescribeInstancesResponse>({
+        const req: ECSRequest = {
           client: this.client,
           action: 'DescribeInstances',
           parameters,
-        });
+        };
+
+        const response = await this.request<DescribeInstancesResponse>(req);
         const instances = response.Instances.Instance;
         for (const instance of instances) {
           await iteratee(instance);

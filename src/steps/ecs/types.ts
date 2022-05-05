@@ -47,25 +47,25 @@ export interface Instance {
   InstanceTypeFamily?: string;
   OSType?: string;
   NetworkInterfaces?: {
-    NetworkInterface: NetworkInterface[];
+    NetworkInterface?: NetworkInterface[];
   };
   OperationLocks?: {
-    LockReason: LockReason[];
+    LockReason?: LockReason[];
   };
   Tags?: {
-    Tag: Tag[];
+    Tag?: Tag[];
   };
   RdmaIpAddress?: {
     RdmaIpAddress?: string[];
   };
   SecurityGroupIds?: {
-    SecurityGroupId: string[];
+    SecurityGroupId?: string[];
   };
   PublicIpAddress?: {
-    IpAddress: string[];
+    IpAddress?: string[];
   };
   InnerIpAddress?: {
-    IpAddress: string[];
+    IpAddress?: string[];
   };
   VpcAttributes?: VPCAttributes;
   EipAddress?: EipAddress;

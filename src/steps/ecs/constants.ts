@@ -10,7 +10,7 @@ export const ECSSteps = {
 export const ECSEntities: Record<'ECS_INSTANCE', StepEntityMetadata> = {
   ECS_INSTANCE: {
     resourceName: 'ECS Instance',
-    _type: 'ecs_instance',
+    _type: 'alibaba_cloud_ecs_instance',
     _class: ['Host'],
     schema: {
       additionalProperties: true,
