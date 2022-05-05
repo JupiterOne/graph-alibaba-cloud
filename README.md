@@ -24,7 +24,7 @@ with JupiterOne in the [integration documentation](docs/jupiterone.md).
    integration is executed outside the JupiterOne managed environment (local
    development or on-prem), values for these parameters are read from Node's
    `process.env` by converting config field names to constant case. For example,
-   `clientId` is read from `process.env.CLIENT_ID`.
+   `accessKeyId` is read from `process.env.ACCESS_KEY_ID`.
 
    The `.env` file is loaded into `process.env` before the integration code is
    executed. This file is not required should you configure the environment
