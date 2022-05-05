@@ -7,3 +7,13 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## 1.0.0 - 2022-05-05
+
+### Added
+
+- Added the following entities:
+
+| Resources    | Entity `_type`               | Entity `_class` |
+| ------------ | ---------------------------- | --------------- |
+| ECS Instance | `alibaba_cloud_ecs_instance` | `Host`          |
