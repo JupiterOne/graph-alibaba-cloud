@@ -1,35 +1,26 @@
-# {{provider}} Integration with JupiterOne
+# Alibaba Cloud Integration with JupiterOne
 
-## {{provider}} + JupiterOne Integration Benefits
+## Alibaba Cloud + JupiterOne Integration Benefits
 
-TODO: Iterate the benefits of ingesting data from the provider into JupiterOne.
-Consider the following examples:
-
-- Visualize {{provider}} services, teams, and users in the JupiterOne graph.
-- Map {{provider}} users to employees in your JupiterOne account.
-- Monitor changes to {{provider}} users using JupiterOne alerts.
+- Visualize Alibaba Cloud resources in the JupiterOne graph.
+- Monitor visibility and governance of your Alibaba cloud environment by
+  leveraging hundreds of out of the box queries.
+- Monitor changes to Alibaba Cloud users using JupiterOne alerts.
 
 ## How it Works
 
-TODO: Iterate significant activities the integration enables. Consider the
-following examples:
-
-- JupiterOne periodically fetches services, teams, and users from {{provider}}
-  to update the graph.
+- JupiterOne periodically fetches users and cloud resources from Azure to update
+  the graph.
 - Write JupiterOne queries to review and monitor updates to the graph, or
   leverage existing queries.
-- Configure alerts to take action when JupiterOne graph changes, or leverage
+- Configure alerts to take action when the JupiterOne graph changes, or leverage
   existing alerts.
 
 ## Requirements
 
-TODO: Iterate requirements for setting up the integration. Consider the
-following examples:
-
-- {{provider}} supports the OAuth2 Client Credential flow. You must have a
-  Administrator user account.
-- JupiterOne requires a REST API key. You need permission to create a user in
-  {{provider}} that will be used to obtain the API key.
+- JupiterOne requires an Access and Secret Access Key for making requests to the
+  Alibaba Cloud API.
+  - You need permission to create a user with an Access and Secret Access key.
 - You must have permission in JupiterOne to install new integrations.
 
 ## Support
@@ -39,42 +30,43 @@ If you need help with this integration, please contact
 
 ## Integration Walkthrough
 
-### In {{provider}}
+### In Alibaba Cloud
 
-TODO: List specific actions that must be taken in the provider. Remove this
-section when there are no actions to take in the provider.
+An Access Key ID and Access Key Secret is required for the integration to
+interact with Alibaba Cloud's API. In order to obtain an Access Key ID/Secret
+combination for the integration, an administrator of the Alibaba Cloud account
+will need to create a new RAM user the integration can use. Additionally, the
+user will need to have Read Only access to the account. To do so, the
+administrator can:
 
-1. [Generate a REST API key](https://example.com/docs/generating-api-keys)
+1. Navigate to the RAM page in the Alibaba Cloud console.
+2. Select `Create User`.
+3. Check the `Open API Access` option while creating the new user.
+4. Obtain the Access Key ID/Secret combination that is generated.
+5. Grant the new user the `ReadOnlyAccess` permission.
 
 ### In JupiterOne
 
-TODO: List specific actions that must be taken in JupiterOne. Many of the
-following steps will be reusable; take care to be sure they remain accurate.
-
 1. From the configuration **Gear Icon**, select **Integrations**.
-2. Scroll to the **{{provider}}** integration tile and click it.
+2. Scroll to the **Alibaba Cloud** integration tile and click it.
 3. Click the **Add Configuration** button and configure the following settings:
 
-- Enter the **Account Name** by which you'd like to identify this {{provider}}
+- Enter the **Account Name** by which you'd like to identify this Alibaba Cloud
   account in JupiterOne. Ingested entities will have this value stored in
   `tag.AccountName` when **Tag with Account Name** is checked.
 - Enter a **Description** that will further assist your team when identifying
   the integration instance.
 - Select a **Polling Interval** that you feel is sufficient for your monitoring
   needs. You may leave this as `DISABLED` and manually execute the integration.
-- {{additional provider-specific settings}} Enter the **{{provider}} API Key**
-  generated for use by JupiterOne.
+- Enter the Alibaba Cloud **Access Key ID** and **Secret Access Key** generated
+  for use by JupiterOne.
 
 4. Click **Create Configuration** once all values are provided.
 
 # How to Uninstall
 
-TODO: List specific actions that must be taken to uninstall the integration.
-Many of the following steps will be reusable; take care to be sure they remain
-accurate.
-
 1. From the configuration **Gear Icon**, select **Integrations**.
-2. Scroll to the **{{provider}}** integration tile and click it.
+2. Scroll to the **Alibaba Cloud** integration tile and click it.
 3. Identify and click the **integration to delete**.
 4. Click the **trash can** icon.
 5. Click the **Remove** button to delete the integration.
