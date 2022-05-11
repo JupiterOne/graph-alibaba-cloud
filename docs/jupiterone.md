@@ -40,7 +40,7 @@ user will need to have Read Only access to the account. To do so, the
 administrator can:
 
 1. Navigate to the RAM page in the Alibaba Cloud console.
-2. Select `Create User`.
+2. Select `Create User`. We suggest the name of the user include `JupiterOne`.
 3. Check the `Open API Access` option while creating the new user.
 4. Obtain the Access Key ID/Secret combination that is generated.
 5. Grant the new user the `ReadOnlyAccess` permission.
