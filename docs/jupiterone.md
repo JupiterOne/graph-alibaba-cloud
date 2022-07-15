@@ -1,4 +1,4 @@
-# Alibaba Cloud Integration with JupiterOne
+# Alibaba Cloud
 
 ## Alibaba Cloud + JupiterOne Integration Benefits
 
