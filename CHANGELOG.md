@@ -17,6 +17,9 @@ and this project adheres to
 | ALB Load Balancer | `alibaba_cloud_alb_load_balancer` | `Gateway`             |
 | Autoscaling Group | `alibaba_cloud_autoscaling_group` | `Deployment`, `Group` |
 | NAT Gateway       | `alibaba_cloud_nat_gateway`       | `Gateway`             |
+| OSS Bucket        | `alibaba_cloud_oss_bucket`        | `DataStore`           |
+| OSS Object        | `alibaba_cloud_oss_object`        | `DataObject`          |
+| RAM Group         | `alibaba_cloud_ram_group`         | `UserGroup`           |
 | RAM Group         | `alibaba_cloud_ram_group`         | `UserGroup`           |
 | RAM Policy        | `alibaba_cloud_ram_policy`        | `Policy`              |
 | RAM Role          | `alibaba_cloud_ram_role`          | `AccessRole`          |
@@ -29,6 +32,7 @@ and this project adheres to
 | Source Entity `_type`             | Relationship `_class` | Target Entity `_type`             |
 | --------------------------------- | --------------------- | --------------------------------- |
 | `alibaba_cloud_autoscaling_group` | **USES**              | `alibaba_cloud_vpc`               |
+| `alibaba_cloud_oss_bucket`        | **HAS**               | `alibaba_cloud_oss_object`        |
 | `alibaba_cloud_ram_group`         | **HAS**               | `alibaba_cloud_ram_user`          |
 | `alibaba_cloud_ram_policy`        | **ASSIGNED**          | `alibaba_cloud_ram_group`         |
 | `alibaba_cloud_ram_policy`        | **ASSIGNED**          | `alibaba_cloud_ram_role`          |
@@ -36,6 +40,7 @@ and this project adheres to
 | `alibaba_cloud_vpc`               | **HAS**               | `alibaba_cloud_alb_load_balancer` |
 | `alibaba_cloud_vpc`               | **HAS**               | `alibaba_cloud_ecs_instance`      |
 | `alibaba_cloud_vpc`               | **HAS**               | `alibaba_cloud_nat_gateway`       |
+| `alibaba_cloud_vpc`               | **HAS**               | `alibaba_cloud_vpn_gateway`       |
 
 ## 1.0.0 - 2022-05-05
 
