@@ -7,6 +7,7 @@ import { RegionalServiceClient } from '../../../client/regionalClient';
 import { DescribeInstancesParameters, ECSRequest } from './types/request';
 import { ECS_REGIONS } from '../../../regions';
 import { IntegrationLogger } from '@jupiterone/integration-sdk-core';
+import { PAGE_SIZE } from '../../../client/constants';
 
 export class ECSClient extends RegionalServiceClient {
   private client: AlibabaClient;
@@ -33,7 +34,7 @@ export class ECSClient extends RegionalServiceClient {
       return this.forEachPage(async (nextToken?: string) => {
         const parameters: DescribeInstancesParameters = {
           RegionId: region,
-          PageSize: 50,
+          PageSize: PAGE_SIZE,
           NextToken: nextToken,
         };
 
