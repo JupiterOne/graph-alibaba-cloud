@@ -12,9 +12,10 @@ and this project adheres to
 
 - Added the following entities:
 
-| Resources   | Entity `_type`              | Entity `_class` |
-| ----------- | --------------------------- | --------------- |
-| VPN Gateway | `alibaba_cloud_vpn_gateway` | `Gateway`       |
+| Resources             | Entity `_type`              | Entity `_class` |
+| --------------------- | --------------------------- | --------------- |
+| VPN Gateway           | `alibaba_cloud_vpn_gateway` | `Gateway`       |
+| Virtual Private Cloud | `alibaba_cloud_vpc`         | `Network`       |
 
 ## 1.0.0 - 2022-05-05
 
