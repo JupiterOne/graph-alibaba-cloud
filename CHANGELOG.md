@@ -8,6 +8,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Added the following entities:
+
+| Resources   | Entity `_type`              | Entity `_class` |
+| ----------- | --------------------------- | --------------- |
+| VPN Gateway | `alibaba_cloud_vpn_gateway` | `Gateway`       |
+
 ## 1.0.0 - 2022-05-05
 
 ### Added

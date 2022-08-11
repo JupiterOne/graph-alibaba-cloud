@@ -91,6 +91,7 @@ The following entities are created:
 | Resources    | Entity `_type`               | Entity `_class` |
 | ------------ | ---------------------------- | --------------- |
 | ECS Instance | `alibaba_cloud_ecs_instance` | `Host`          |
+| VPN Gateway  | `alibaba_cloud_vpn_gateway`  | `Gateway`       |
 
 <!--
 ********************************************************************************
