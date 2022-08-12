@@ -12,10 +12,18 @@ and this project adheres to
 
 - Added the following entities:
 
-| Resources             | Entity `_type`              | Entity `_class` |
-| --------------------- | --------------------------- | --------------- |
-| VPN Gateway           | `alibaba_cloud_vpn_gateway` | `Gateway`       |
-| Virtual Private Cloud | `alibaba_cloud_vpc`         | `Network`       |
+| Resources             | Entity `_type`                    | Entity `_class`       |
+| --------------------- | --------------------------------- | --------------------- |
+| VPN Gateway           | `alibaba_cloud_vpn_gateway`       | `Gateway`             |
+| Virtual Private Cloud | `alibaba_cloud_vpc`               | `Network`             |
+| Autoscaling Group     | `alibaba_cloud_autoscaling_group` | `Deployment`, `Group` |
+
+- Added the following relationships:
+
+| Source Entity `_type`             | Relationship `_class` | Target Entity `_type`        |
+| --------------------------------- | --------------------- | ---------------------------- |
+| `alibaba_cloud_autoscaling_group` | **USES**              | `alibaba_cloud_vpc`          |
+| `alibaba_cloud_vpc`               | **HAS**               | `alibaba_cloud_ecs_instance` |
 
 ## 1.0.0 - 2022-05-05
 
