@@ -15,6 +15,4 @@ export interface DescribeVpnGatewaysParameters {
   BusinessStatus?: string;
   PageNumber?: number;
   PageSize?: number;
-  MaxResults?: number;
-  NextToken?: string;
 }
