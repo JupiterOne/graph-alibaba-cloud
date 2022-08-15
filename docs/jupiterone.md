@@ -9,8 +9,8 @@
 
 ## How it Works
 
-- JupiterOne periodically fetches users and cloud resources from Azure to update
-  the graph.
+- JupiterOne periodically fetches users and cloud resources from Alibaba Cloud
+  to update the graph.
 - Write JupiterOne queries to review and monitor updates to the graph, or
   leverage existing queries.
 - Configure alerts to take action when the JupiterOne graph changes, or leverage
