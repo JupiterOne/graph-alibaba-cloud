@@ -92,6 +92,7 @@ The following entities are created:
 | ----------------- | --------------------------------- | --------------------- |
 | Autoscaling Group | `alibaba_cloud_autoscaling_group` | `Deployment`, `Group` |
 | ECS Instance      | `alibaba_cloud_ecs_instance`      | `Host`                |
+| NAT Gateway       | `alibaba_cloud_nat_gateway`       | `Gateway`             |
 | VPC               | `alibaba_cloud_vpc`               | `Network`             |
 | VPN Gateway       | `alibaba_cloud_vpn_gateway`       | `Gateway`             |
 
@@ -103,6 +104,7 @@ The following relationships are created:
 | --------------------------------- | --------------------- | ---------------------------- |
 | `alibaba_cloud_autoscaling_group` | **USES**              | `alibaba_cloud_vpc`          |
 | `alibaba_cloud_vpc`               | **HAS**               | `alibaba_cloud_ecs_instance` |
+| `alibaba_cloud_vpc`               | **HAS**               | `alibaba_cloud_nat_gateway`  |
 
 <!--
 ********************************************************************************

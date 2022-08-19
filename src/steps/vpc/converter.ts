@@ -5,10 +5,14 @@ import {
 } from '@jupiterone/integration-sdk-core';
 
 import { VPCEntities } from './constants';
-import { VPC, VPCAttribute } from './types';
+import { NATGateway, NATNetworkType, VPC, VPCAttribute } from './types';
 
 export function getVpcKey(vpcId: string) {
   return `alibaba_cloud_vpc:${vpcId}`;
+}
+
+export function getNatKey(natGatewayId: string) {
+  return `alibaba_cloud_nat_gateway:${natGatewayId}`;
 }
 
 export function createVPCEntity(vpc: VPC & VPCAttribute): Entity {
@@ -39,6 +43,7 @@ export function createVPCEntity(vpc: VPC & VPCAttribute): Entity {
         ownerId: String(vpc.OwnerId),
         region: vpc.RegionId,
         name: vpc.VpcName,
+        displayName: vpc.VpcName,
         vRouterId: vpc.VRouterId,
         description: vpc.Description,
         cenStatus: vpc.CenStatus,
@@ -70,6 +75,58 @@ export function createVPCEntity(vpc: VPC & VPCAttribute): Entity {
         'ipv6CidrBlocks.ipv6CidrBlock': vpc.Ipv6CidrBlocks?.Ipv6CidrBlock?.map(
           (v) => v.Ipv6CidrBlock,
         ),
+      },
+    },
+  });
+}
+
+export function createNATGatewayEntity(natGateway: NATGateway): Entity {
+  return createIntegrationEntity({
+    entityData: {
+      source: natGateway,
+      assign: {
+        _key: getNatKey(natGateway.NatGatewayId),
+        _type: VPCEntities.NAT_GATEWAY._type,
+        _class: VPCEntities.NAT_GATEWAY._class,
+        category: ['network'],
+        function: ['nat'],
+        public: natGateway.NetworkType === NATNetworkType.INTERNET,
+        status: natGateway.Status,
+        createdOn: parseTimePropertyValue(natGateway.CreationTime),
+        vpcId: natGateway.VpcId,
+        natType: natGateway.NatType,
+        autoPay: natGateway.AutoPay,
+        spec: natGateway.Spec,
+        deletionProtection: natGateway.DeletionProtection,
+        networkType: natGateway.NetworkType,
+        securityProtectionEnabled: natGateway.SecurityProtectionEnabled,
+        instanceChargeType: natGateway.InstanceChargeType,
+        regionId: natGateway.RegionId,
+        ecsMetricEnabled: natGateway.EcsMetricEnabled,
+        icmpReplyEnabled: natGateway.IcmpReplyEnabled,
+        description: natGateway.Description,
+        expiresOn: parseTimePropertyValue(natGateway.ExpiredTime),
+        resourceGroupId: natGateway.ResourceGroupId,
+        id: natGateway.NatGatewayId,
+        internetChargeType: natGateway.InternetChargeType,
+        businessStatus: natGateway.BusinessStatus,
+        name: natGateway.Name,
+        forwardTableIds: natGateway.ForwardTableIds.ForwardTableId,
+        snatTableIds: natGateway.SnatTableIds.SnatTableId,
+        fullNatTableIds: natGateway.FullNatTableIds.FullNatTableId,
+        'natGatewayPrivateInfo.vswitchId':
+          natGateway.NatGatewayPrivateInfo.VswitchId,
+        'natGatewayPrivateInfo.eniInstanceId':
+          natGateway.NatGatewayPrivateInfo.EniInstanceId,
+        'natGatewayPrivateInfo.maxBandwidth':
+          natGateway.NatGatewayPrivateInfo.MaxBandwidth,
+        'natGatewayPrivateInfo.maxSessionQuota':
+          natGateway.NatGatewayPrivateInfo.MaxSessionQuota,
+        'natGatewayPrivateInfo.maxSessionEstablishRate':
+          natGateway.NatGatewayPrivateInfo.MaxSessionEstablishRate,
+        'natGatewayPrivateInfo.izNo': natGateway.NatGatewayPrivateInfo.IzNo,
+        'natGatewayPrivateInfo.eniType':
+          natGateway.NatGatewayPrivateInfo.EniType,
       },
     },
   });

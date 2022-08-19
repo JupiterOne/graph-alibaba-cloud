@@ -1,13 +1,16 @@
-import { StepEntityMetadata } from '@jupiterone/integration-sdk-core';
+import {
+  RelationshipClass,
+  StepEntityMetadata,
+  StepRelationshipMetadata,
+} from '@jupiterone/integration-sdk-core';
 
-export const VPCSteps = {
-  FETCH_VPCs: {
-    id: 'fetch-vpcs',
-    name: 'Fetch VPCs',
-  },
-};
+export enum VPCSteps {
+  FETCH_VPCS = 'fetch-vpcs',
+  FETCH_NAT_GATEWAYS = 'fetch-nat-gateways',
+  BUILD_VPC_NAT_GATEWAY_RELATIONSHIPS = 'build-vpc-has-nat-gateway-relationships',
+}
 
-export const VPCEntities: Record<'VPC', StepEntityMetadata> = {
+export const VPCEntities: Record<'VPC' | 'NAT_GATEWAY', StepEntityMetadata> = {
   VPC: {
     resourceName: 'VPC',
     _type: 'alibaba_cloud_vpc',
@@ -20,13 +23,14 @@ export const VPCEntities: Record<'VPC', StepEntityMetadata> = {
         'CIDRv6.mask': { type: 'number' },
         public: { type: 'boolean' },
         internal: { type: 'boolean' },
-        creationTime: { type: 'number' },
+        createdOn: { type: 'number' },
         status: { type: 'string' },
         id: { type: 'string' },
         isDefault: { type: 'boolean' },
         ownerId: { type: 'string' },
         region: { type: 'string' },
         name: { type: 'string' },
+        displayName: { type: 'string' },
         vRouterId: { type: 'string' },
         description: { type: 'string' },
         cenStatus: { type: 'string' },
@@ -51,5 +55,57 @@ export const VPCEntities: Record<'VPC', StepEntityMetadata> = {
       },
       required: ['CIDR', 'public', 'internal', 'region', 'id'],
     },
+  },
+  NAT_GATEWAY: {
+    resourceName: 'NAT Gateway',
+    _type: 'alibaba_cloud_nat_gateway',
+    _class: ['Gateway'],
+    schema: {
+      properties: {
+        status: { type: 'string' },
+        createdOn: { type: 'number' },
+        vpcId: { type: 'string' },
+        natType: { type: 'string' },
+        autoPay: { type: 'boolean' },
+        spec: { type: 'string' },
+        deletionProtection: { type: 'boolean' },
+        networkType: { type: 'string' },
+        securityProtectionEnabled: { type: 'boolean' },
+        instanceChargeType: { type: 'string' },
+        regionId: { type: 'string' },
+        ecsMetricEnabled: { type: 'boolean' },
+        icmpReplyEnabled: { type: 'boolean' },
+        description: { type: 'string' },
+        expiresOn: { type: 'number' },
+        resourceGroupId: { type: 'string' },
+        id: { type: 'string' },
+        internetChargeType: { type: 'string' },
+        businessStatus: { type: 'string' },
+        name: { type: 'string' },
+        forwardTableIds: { type: 'array', items: { type: 'string' } },
+        snatTableIds: { type: 'array', items: { type: 'string' } },
+        fullNatTableIds: { type: 'array', items: { type: 'string' } },
+        'natGatewayPrivateInfo.vswitchId': { type: 'string' },
+        'natGatewayPrivateInfo.eniInstanceId': { type: 'string' },
+        'natGatewayPrivateInfo.maxBandwidth': { type: 'number' },
+        'natGatewayPrivateInfo.maxSessionQuota': { type: 'number' },
+        'natGatewayPrivateInfo.maxSessionEstablishRate': { type: 'number' },
+        'natGatewayPrivateInfo.izNo': { type: 'string' },
+        'natGatewayPrivateInfo.eniType': { type: 'string' },
+      },
+      required: ['category', 'function', 'public', 'id'],
+    },
+  },
+};
+
+export const VPCRelationships: Record<
+  'VPC_HAS_NAT_GATEWAY',
+  StepRelationshipMetadata
+> = {
+  VPC_HAS_NAT_GATEWAY: {
+    _type: 'alibaba_cloud_vpc_has_nat_gateway',
+    sourceType: VPCEntities.VPC._type,
+    _class: RelationshipClass.HAS,
+    targetType: VPCEntities.NAT_GATEWAY._type,
   },
 };

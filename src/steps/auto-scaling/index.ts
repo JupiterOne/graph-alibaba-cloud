@@ -82,7 +82,7 @@ export const autoScalingSteps: IntegrationStep<IntegrationConfig>[] = [
     relationships: [AutoScalingRelationships.AUTOSCALING_GROUP_USES_VPC],
     dependsOn: [
       AutoScalingSteps.FETCH_AUTOSCALING_GROUPS.id,
-      VPCSteps.FETCH_VPCs.id,
+      VPCSteps.FETCH_VPCS,
     ],
     executionHandler: buildScalingGroupUsesVpcRelationship,
   },

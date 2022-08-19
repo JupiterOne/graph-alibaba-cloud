@@ -8,7 +8,7 @@ interface Ipv6CidrBlock {
   Ipv6CidrBlock: string;
 }
 
-enum VPCStatus {
+export enum VPCStatus {
   AVAILABLE = 'Available',
   PENDING = 'Pending',
 }
@@ -68,4 +68,69 @@ export interface VPCAttribute {
   SupportIpv4Gateway: boolean;
   Ipv4GatewayId: string;
   NetworkAclNum: number;
+}
+
+export enum NATInstanceChargeType {
+  POSTPAID = 'PostPaid',
+  PREPAID = 'PrePaid',
+}
+
+export enum NATGatewayStatus {
+  CREATING = 'Creating',
+  AVAILABLE = 'Available',
+  MODIFYING = 'Modifying',
+  DELETING = 'Deleting',
+  CONVERTING = 'Converting',
+}
+
+export enum NATNetworkType {
+  INTERNET = 'internet',
+  INTRANET = 'intranet',
+}
+
+export interface NATIP {
+  UsingStatus: string;
+  IpAddress: string;
+  AllocationId: string;
+  PrivateIpAddress: string;
+  SnatEntryEnabled?: boolean;
+}
+
+export interface NATGateway {
+  Status: NATGatewayStatus;
+  CreationTime: string;
+  VpcId: string;
+  NatType: string;
+  AutoPay: boolean;
+  Spec: string;
+  DeletionProtection: boolean;
+  NetworkType: NATNetworkType;
+  SecurityProtectionEnabled: boolean;
+  InstanceChargeType: NATInstanceChargeType;
+  RegionId: string;
+  EcsMetricEnabled: boolean;
+  IcmpReplyEnabled: boolean;
+  Description: string;
+  ExpiredTime: string;
+  ResourceGroupId: string;
+  NatGatewayId: string;
+  InternetChargeType: string;
+  BusinessStatus: string;
+  Name: string;
+  IpLists: { IpList: NATIP[] };
+  ForwardTableIds: { ForwardTableId: string[] };
+  SnatTableIds: { SnatTableId: string[] };
+  FullNatTableIds: { FullNatTableId: string[] };
+  BandwidthPackageIds?: { BandwidthPackageId: string[] };
+  NatGatewayPrivateInfo: {
+    VswitchId: string;
+    EniInstanceId: string;
+    MaxBandwidth: number;
+    MaxSessionQuota: number;
+    MaxSessionEstablishRate: number;
+    IzNo: string;
+    EniType: string;
+  };
+  PrivateLinkEnabled?: boolean;
+  PrivateLinkMode?: string;
 }

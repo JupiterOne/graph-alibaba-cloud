@@ -16,8 +16,19 @@ describe('#vpc', () => {
       name: 'fetch-vpcs',
     });
 
-    const stepConfig = buildStepTestConfigForStep(VPCSteps.FETCH_VPCs.id);
+    const stepConfig = buildStepTestConfigForStep(VPCSteps.FETCH_VPCS);
     const stepResult = await executeStepWithDependencies(stepConfig);
     expect(stepResult).toMatchStepMetadata(stepConfig);
-  });
+  }, 20000);
+
+  test('fetch-nat-gateways', async () => {
+    recording = setupProjectRecording({
+      directory: __dirname,
+      name: 'fetch-nat-gateways',
+    });
+
+    const stepConfig = buildStepTestConfigForStep(VPCSteps.FETCH_NAT_GATEWAYS);
+    const stepResult = await executeStepWithDependencies(stepConfig);
+    expect(stepResult).toMatchStepMetadata(stepConfig);
+  }, 20000);
 });

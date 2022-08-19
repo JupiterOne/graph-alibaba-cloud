@@ -1,4 +1,4 @@
-import { StepSpec } from '@jupiterone/integration-sdk-core';
+import { RelationshipClass, StepSpec } from '@jupiterone/integration-sdk-core';
 import { IntegrationConfig } from '../../../../src/config';
 
 export const vpcSpec: StepSpec<IntegrationConfig>[] = [
@@ -18,6 +18,42 @@ export const vpcSpec: StepSpec<IntegrationConfig>[] = [
     ],
     relationships: [],
     dependsOn: [],
+    implemented: true,
+  },
+  {
+    /**
+     * Action: DescribeNatGateways
+     * PATTERN: Fetch Entities
+     */
+    id: 'fetch-nat-gateways',
+    name: 'Fetch NAT Gateways',
+    entities: [
+      {
+        resourceName: 'NAT Gateway',
+        _type: 'alibaba_cloud_nat_gateway',
+        _class: ['Gateway'],
+      },
+    ],
+    relationships: [],
+    dependsOn: [],
+    implemented: true,
+  },
+  {
+    /**
+     * PATTERN: Build Child Relationships
+     */
+    id: 'build-vpc-has-nat-gateway-relationships',
+    name: 'Build VPC has NAT Gateway Relationships',
+    entities: [],
+    relationships: [
+      {
+        _type: 'alibaba_cloud_vpc_has_nat_gateway',
+        sourceType: 'alibaba_cloud_vpc',
+        _class: RelationshipClass.HAS,
+        targetType: 'alibaba_cloud_nat_gateway',
+      },
+    ],
+    dependsOn: ['fetch-vpcs', 'fetch-nat-gateways'],
     implemented: true,
   },
 ];
