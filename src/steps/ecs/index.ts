@@ -10,9 +10,9 @@ import { createECSClient } from './client/client';
 import { IntegrationConfig } from '../../config';
 import { ECSEntities, ECSRelationships, ECSSteps } from './constants';
 import { createECSInstanceEntity } from './converter';
-import { getVpcKey } from '../vpc/converter';
 import { VPCSteps } from '../vpc/constants';
 import { Instance } from './types';
+import { getVpcKey } from '../vpc/converter';
 
 export async function fetchInstances({
   logger,
@@ -26,7 +26,7 @@ export async function fetchInstances({
   });
 }
 
-export async function buildVpcHasEcsInstanceRelationship({
+export async function buildVPCHasEcsInstanceRelationship({
   logger,
   jobState,
 }: IntegrationStepExecutionContext<IntegrationConfig>) {
@@ -48,7 +48,6 @@ export async function buildVpcHasEcsInstanceRelationship({
       }
 
       const vpcEntity = await jobState.findEntity(getVpcKey(vpcId));
-
       if (vpcEntity) {
         await jobState.addRelationship(
           createDirectRelationship({
@@ -76,7 +75,7 @@ export const ecsSteps: IntegrationStep<IntegrationConfig>[] = [
     name: 'Build VPC has ECS Instance Relationships',
     entities: [],
     relationships: [ECSRelationships.VPC_HAS_ECS_INSTANCE],
-    dependsOn: [ECSSteps.FETCH_ECS_INSTANCES, VPCSteps.FETCH_VPCs.id],
-    executionHandler: buildVpcHasEcsInstanceRelationship,
+    dependsOn: [ECSSteps.FETCH_ECS_INSTANCES, VPCSteps.FETCH_VPCS],
+    executionHandler: buildVPCHasEcsInstanceRelationship,
   },
 ];

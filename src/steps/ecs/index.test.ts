@@ -31,5 +31,5 @@ describe('#ecs', () => {
     );
     const stepResult = await executeStepWithDependencies(stepConfig);
     expect(stepResult).toMatchStepMetadata(stepConfig);
-  });
+  }, 20000);
 });

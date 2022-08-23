@@ -4,16 +4,19 @@ import { IntegrationLogger } from '@jupiterone/integration-sdk-core';
 import { ResourceIteratee } from '../../../client/client';
 import { IntegrationConfig } from '../../../config';
 import {
-  DescribeVpcsResponse,
-  DescribeVpcAttributeResponse,
+  DescribeVPCsResponse,
+  DescribeVPCAttributeResponse,
+  DescribeNATGatewaysResponse,
 } from './types/response';
-import { VPC, VPCAttribute } from '../types';
+import { NATGateway, VPC, VPCAttribute } from '../types';
 import { RegionalServiceClient } from '../../../client/regionalClient';
 import {
-  DescribeVPCsRequest,
+  DescribeNATGatewaysRequest,
   DescribeVPCAttributeRequest,
-  VPCParameters,
+  DescribeVPCsRequest,
+  NATGatewayParameters,
   VPCAttributeParameters,
+  VPCParameters,
 } from './types/request';
 import { ECS_REGIONS } from '../../../regions';
 import { PAGE_SIZE } from '../../../client/constants';
@@ -40,8 +43,8 @@ export class VPCClient extends RegionalServiceClient {
     iteratee: ResourceIteratee<VPC & VPCAttribute>,
   ): Promise<void> {
     return this.forEachRegion(async (region: string) => {
-      let curPage = 1;
-      let numVpcs = 0;
+      let pageNumber = 0;
+      let totalVpcs = 0;
 
       let vpcParameters: VPCParameters;
       let vpcAttributeParameters: VPCAttributeParameters;
@@ -49,10 +52,12 @@ export class VPCClient extends RegionalServiceClient {
       let vpcAttributeReq: DescribeVPCAttributeRequest;
 
       do {
+        pageNumber += 1;
+
         vpcParameters = {
           RegionId: region,
           PageSize: PAGE_SIZE,
-          PageNumber: curPage,
+          PageNumber: pageNumber,
         };
 
         vpcReq = {
@@ -63,7 +68,8 @@ export class VPCClient extends RegionalServiceClient {
 
         const {
           Vpcs: { Vpc },
-        } = await this.request<DescribeVpcsResponse>(vpcReq);
+          TotalCount,
+        } = await this.request<DescribeVPCsResponse>(vpcReq);
 
         for (const vpc of Vpc) {
           vpcAttributeParameters = {
@@ -77,7 +83,7 @@ export class VPCClient extends RegionalServiceClient {
             parameters: vpcAttributeParameters,
           };
 
-          const response = await this.request<DescribeVpcAttributeResponse>(
+          const response = await this.request<DescribeVPCAttributeResponse>(
             vpcAttributeReq,
           );
           const { RequestId, ...vpcAttributeResponse } = response;
@@ -85,9 +91,47 @@ export class VPCClient extends RegionalServiceClient {
           await iteratee({ ...vpc, ...(vpcAttributeResponse as VPCAttribute) });
         }
 
-        numVpcs = Vpc.length;
-        curPage += 1;
-      } while (numVpcs >= PAGE_SIZE);
+        totalVpcs = TotalCount;
+      } while (pageNumber * PAGE_SIZE < totalVpcs);
+    });
+  }
+
+  public async iterateNATGateways(
+    iteratee: ResourceIteratee<NATGateway>,
+  ): Promise<void> {
+    return this.forEachRegion(async (region: string) => {
+      let pageNumber = 0;
+      let totalNgws = 0;
+
+      let natGatewayParameters: NATGatewayParameters;
+      let natGatewayReq: DescribeNATGatewaysRequest;
+
+      do {
+        pageNumber += 1;
+
+        natGatewayParameters = {
+          RegionId: region,
+          PageSize: PAGE_SIZE,
+          PageNumber: pageNumber,
+        };
+
+        natGatewayReq = {
+          client: this.client,
+          action: 'DescribeNatGateways',
+          parameters: natGatewayParameters,
+        };
+
+        const {
+          NatGateways: { NatGateway },
+          TotalCount,
+        } = await this.request<DescribeNATGatewaysResponse>(natGatewayReq);
+
+        for (const ngw of NatGateway) {
+          await iteratee(ngw);
+        }
+
+        totalNgws = TotalCount;
+      } while (pageNumber * PAGE_SIZE < totalNgws);
     });
   }
 }

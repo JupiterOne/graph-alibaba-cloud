@@ -15,6 +15,7 @@ and this project adheres to
 | Resources             | Entity `_type`                    | Entity `_class`       |
 | --------------------- | --------------------------------- | --------------------- |
 | VPN Gateway           | `alibaba_cloud_vpn_gateway`       | `Gateway`             |
+| NAT Gateway           | `alibaba_cloud_nat_gateway`       | `Gateway`             |
 | Virtual Private Cloud | `alibaba_cloud_vpc`               | `Network`             |
 | Autoscaling Group     | `alibaba_cloud_autoscaling_group` | `Deployment`, `Group` |
 
