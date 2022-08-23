@@ -8,6 +8,7 @@ import { VPNGateway } from '../types';
 import { RegionalServiceClient } from '../../../client/regionalClient';
 import { DescribeVpnGatewaysParameters, VPNRequest } from './types/request';
 import { ECS_REGIONS } from '../../../regions';
+import { PAGE_SIZE } from '../../../client/constants';
 
 export class VPNClient extends RegionalServiceClient {
   private client: AlibabaClient;
@@ -31,11 +32,14 @@ export class VPNClient extends RegionalServiceClient {
     iteratee: ResourceIteratee<VPNGateway>,
   ): Promise<void> {
     return this.forEachRegion(async (region: string) => {
-      return this.forEachPage(async (nextToken?: string) => {
+      let pageNumber = 1;
+      let totalCount = 0;
+
+      do {
         const parameters: DescribeVpnGatewaysParameters = {
           RegionId: region,
-          PageSize: 50,
-          NextToken: nextToken,
+          PageSize: PAGE_SIZE,
+          PageNumber: pageNumber,
         };
 
         const req: VPNRequest = {
@@ -49,9 +53,9 @@ export class VPNClient extends RegionalServiceClient {
         for (const vpnGateway of vpnGateways) {
           await iteratee(vpnGateway);
         }
-
-        return response;
-      });
+        pageNumber++;
+        totalCount = response.TotalCount;
+      } while (pageNumber * PAGE_SIZE < totalCount);
     });
   }
 }
