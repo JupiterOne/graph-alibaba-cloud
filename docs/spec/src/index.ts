@@ -6,6 +6,7 @@ import { ecsSpec } from './ecs';
 import { vpcSpec } from './vpc';
 import { autoScalingSpec } from './auto-scaling';
 import { ramSpec } from './ram';
+import { ossSpec } from './oss';
 
 export const invocationConfig: IntegrationSpecConfig<IntegrationConfig> = {
   integrationSteps: [
@@ -14,5 +15,6 @@ export const invocationConfig: IntegrationSpecConfig<IntegrationConfig> = {
     ...ramSpec,
     ...vpcSpec,
     ...autoScalingSpec,
+    ...ossSpec,
   ],
 };
