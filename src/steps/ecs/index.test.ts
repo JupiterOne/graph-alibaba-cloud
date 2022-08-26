@@ -8,7 +8,6 @@ describe('#ecs', () => {
   afterEach(async () => {
     await recording.stop();
   });
-
   test('fetch-ecs-instances', async () => {
     recording = setupProjectRecording({
       directory: __dirname,
