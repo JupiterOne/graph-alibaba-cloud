@@ -5,6 +5,12 @@ import {
 } from '@jupiterone/integration-sdk-core';
 import { VPCEntities } from '../vpc/constants';
 
+// ECS Config
+export const ECS_REQ_TIMEOUT = 20000;
+export const ECS_DEFAULT_ENDPOINT = 'https://ecs.aliyuncs.com';
+export const ECS_API_VERSION = '2014-05-26';
+export const ECS_PAGE_SIZE = 50;
+
 export enum ECSSteps {
   FETCH_ECS_INSTANCES = 'fetch-ecs-instances',
   BUILD_VPC_ECS_INSTANCE_RELATIONSHIPS = 'build-vpc-has-ecs-instance-relationships',

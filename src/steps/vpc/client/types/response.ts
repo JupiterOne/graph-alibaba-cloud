@@ -25,3 +25,13 @@ export interface DescribeVPNGatewaysResponse
     VpnGateway: VPNGateway[];
   };
 }
+
+export interface DescribeVPCRegionsResponse extends AlibabaResponse {
+  Regions: {
+    Region: {
+      RegionId: string;
+      RegionEndpoint: string;
+      LocalName: string;
+    }[];
+  };
+}

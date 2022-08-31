@@ -1,12 +1,14 @@
 import { LoadBalancer } from '../../types';
-import { PaginatedResponse } from '../../../../client/types/response';
+import {
+  AlibabaResponse,
+  PaginatedResponse,
+} from '../../../../client/types/response';
 
 export interface ListLoadBalancersResponse extends PaginatedResponse {
   LoadBalancers: LoadBalancer[];
 }
 
-export interface DescribeRegionsResponse {
-  RequestId?: string;
+export interface DescribeALBRegionsResponse extends AlibabaResponse {
   Regions: {
     RegionId: string;
     RegionEndpoint: string;
