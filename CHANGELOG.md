@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 1.1.0 - 2022-09-05
+
 ### Added
 
 - Added the following entities:
