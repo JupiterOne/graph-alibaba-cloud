@@ -22,13 +22,10 @@ export class ServiceClient {
     );
   }
 
-  protected async forEachPage<T extends { NextToken?: string }>(
-    cb: (nextToken?: string) => Promise<T>,
-  ) {
+  protected async forEachPage(cb: (nextToken?: string) => Promise<string>) {
     let nextToken: string | undefined;
     do {
-      const response = await cb(nextToken);
-      nextToken = response.NextToken;
+      nextToken = await cb(nextToken);
     } while (nextToken);
   }
 

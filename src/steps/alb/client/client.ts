@@ -2,62 +2,71 @@ import AlibabaClient from '@alicloud/pop-core';
 import { ResourceIteratee } from '../../../client/client';
 import { IntegrationConfig } from '../../../config';
 import {
-  DescribeRegionsResponse,
+  DescribeALBRegionsResponse,
   ListLoadBalancersResponse,
 } from './types/response';
 import { LoadBalancer } from '../types';
-import { RegionalServiceClient } from '../../../client/regionalClient';
+import {
+  RegionalServiceClient,
+  RegionList,
+} from '../../../client/regionalClient';
 import {
   ListLoadBalancersParameters as ListLoadBalancersParameters,
   ALBRequest,
 } from './types/request';
 import { IntegrationLogger } from '@jupiterone/integration-sdk-core';
-import { API_VERSION, DEFAULT_REGION, REQ_TIMEOUT } from '../constants';
+import {
+  ALB_API_VERSION,
+  ALB_DEFAULT_ENDPOINT,
+  ALB_PAGE_SIZE,
+  ALB_REQ_TIMEOUT,
+} from '../constants';
 
 export class ALBClient extends RegionalServiceClient {
+  private rootClient: AlibabaClient;
+
   constructor(readonly config: IntegrationConfig, logger: IntegrationLogger) {
-    super({ logger });
-
-    this.getRegions = (): Promise<string[]> => this.describeRegions();
-  }
-
-  private async describeRegions(): Promise<string[]> {
-    const client: AlibabaClient = new AlibabaClient({
-      accessKeyId: this.config.accessKeyId,
-      accessKeySecret: this.config.accessKeySecret,
-      endpoint: DEFAULT_REGION,
-      apiVersion: API_VERSION,
+    super({
+      logger,
+      accessKeyId: config.accessKeyId,
+      accessKeySecret: config.accessKeySecret,
+      apiVersion: ALB_API_VERSION,
+      timeout: ALB_REQ_TIMEOUT,
     });
 
-    const req = {
-      client: client,
-      action: 'DescribeRegions',
-      parameters: {},
-      options: {
-        timeout: REQ_TIMEOUT,
+    this.rootClient = new AlibabaClient({
+      accessKeyId: config.accessKeyId,
+      accessKeySecret: config.accessKeySecret,
+      endpoint: ALB_DEFAULT_ENDPOINT,
+      apiVersion: ALB_API_VERSION,
+      opts: {
+        timeout: ALB_REQ_TIMEOUT,
       },
-    };
+    });
+  }
 
-    const res: DescribeRegionsResponse = await this.request(req);
+  protected override async getRegions(): Promise<RegionList[]> {
+    const { Regions: regionList } =
+      await this.request<DescribeALBRegionsResponse>({
+        client: this.rootClient,
+        action: 'DescribeRegions',
+        parameters: {},
+      });
 
-    return res.Regions.map((r) => r.RegionEndpoint);
+    return regionList.map((r) => ({
+      regionId: r.RegionId,
+      regionEndpoint: r.RegionEndpoint,
+    }));
   }
 
   public async iterateLoadBalancers(
     iteratee: ResourceIteratee<LoadBalancer>,
   ): Promise<void> {
-    return this.forEachRegion(async (region: string) => {
-      const client: AlibabaClient = new AlibabaClient({
-        accessKeyId: this.config.accessKeyId,
-        accessKeySecret: this.config.accessKeySecret,
-        endpoint: `https://${region}`,
-        apiVersion: '2020-06-16',
-      });
-
+    return this.forEachRegion(async (client: AlibabaClient) => {
       return this.forEachPage(async (nextToken?: string) => {
         const parameters: ListLoadBalancersParameters = {
           Action: 'ListLoadBalancers',
-          MaxResults: 50,
+          MaxResults: ALB_PAGE_SIZE,
           ...(nextToken && { NextToken: nextToken }),
         };
 
@@ -68,7 +77,6 @@ export class ALBClient extends RegionalServiceClient {
           options: {
             method: 'POST',
             formatParams: false,
-            timeout: REQ_TIMEOUT,
           },
         };
 
@@ -78,7 +86,7 @@ export class ALBClient extends RegionalServiceClient {
           await iteratee(loadBalancer);
         }
 
-        return response;
+        return response.NextToken;
       });
     });
   }

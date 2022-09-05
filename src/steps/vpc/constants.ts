@@ -4,6 +4,12 @@ import {
   StepRelationshipMetadata,
 } from '@jupiterone/integration-sdk-core';
 
+// VPC Config
+export const VPC_REQ_TIMEOUT = 20000;
+export const VPC_DEFAULT_ENDPOINT = 'https://vpc.aliyuncs.com';
+export const VPC_API_VERSION = '2016-04-28';
+export const VPC_PAGE_SIZE = 50;
+
 export enum VPCSteps {
   FETCH_VPCS = 'fetch-vpcs',
   FETCH_NAT_GATEWAYS = 'fetch-nat-gateways',

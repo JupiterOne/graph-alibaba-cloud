@@ -8,9 +8,13 @@ import {
   DescribeVPCAttributeResponse,
   DescribeNATGatewaysResponse,
   DescribeVPNGatewaysResponse,
+  DescribeVPCRegionsResponse,
 } from './types/response';
 import { NATGateway, VPC, VPCAttribute, VPNGateway } from '../types';
-import { RegionalServiceClient } from '../../../client/regionalClient';
+import {
+  RegionalServiceClient,
+  RegionList,
+} from '../../../client/regionalClient';
 import {
   DescribeNATGatewaysRequest,
   DescribeVPCAttributeRequest,
@@ -21,31 +25,55 @@ import {
   VPCAttributeParameters,
   VPCParameters,
 } from './types/request';
-import { ECS_REGIONS } from '../../../regions';
-import { PAGE_SIZE } from '../../../client/constants';
+import {
+  VPC_API_VERSION,
+  VPC_DEFAULT_ENDPOINT,
+  VPC_PAGE_SIZE,
+  VPC_REQ_TIMEOUT,
+} from '../constants';
 
 export class VPCClient extends RegionalServiceClient {
-  private client: AlibabaClient;
+  private rootClient: AlibabaClient;
 
   constructor(config: IntegrationConfig, logger: IntegrationLogger) {
-    super({ logger });
-
-    this.client = new AlibabaClient({
+    super({
+      logger,
       accessKeyId: config.accessKeyId,
       accessKeySecret: config.accessKeySecret,
-      endpoint: 'https://vpc.aliyuncs.com',
-      apiVersion: '2016-04-28',
+      apiVersion: VPC_API_VERSION,
+      timeout: VPC_REQ_TIMEOUT,
     });
 
-    // ECS does not have an endpoint for returning all regions that support ECS.
-    // Instead, its describeRegions endpoint returns a list of every region.
-    this.getRegions = (): Promise<string[]> => Promise.resolve(ECS_REGIONS);
+    this.rootClient = new AlibabaClient({
+      accessKeyId: config.accessKeyId,
+      accessKeySecret: config.accessKeySecret,
+      endpoint: VPC_DEFAULT_ENDPOINT,
+      apiVersion: VPC_API_VERSION,
+      opts: {
+        timeout: VPC_REQ_TIMEOUT,
+      },
+    });
+  }
+
+  protected override async getRegions(): Promise<RegionList[]> {
+    const {
+      Regions: { Region: regionList },
+    } = await this.request<DescribeVPCRegionsResponse>({
+      client: this.rootClient,
+      action: 'DescribeRegions',
+      parameters: {},
+    });
+
+    return regionList.map((r) => ({
+      regionId: r.RegionId,
+      regionEndpoint: r.RegionEndpoint,
+    }));
   }
 
   public async iterateVPCs(
     iteratee: ResourceIteratee<VPC & VPCAttribute>,
   ): Promise<void> {
-    return this.forEachRegion(async (region: string) => {
+    return this.forEachRegion(async (client: AlibabaClient, region: string) => {
       let pageNumber = 0;
       let totalVpcs = 0;
 
@@ -54,12 +82,12 @@ export class VPCClient extends RegionalServiceClient {
 
         const vpcParameters: VPCParameters = {
           RegionId: region,
-          PageSize: PAGE_SIZE,
+          PageSize: VPC_PAGE_SIZE,
           PageNumber: pageNumber,
         };
 
         const vpcReq: DescribeVPCsRequest = {
-          client: this.client,
+          client,
           action: 'DescribeVpcs',
           parameters: vpcParameters,
         };
@@ -76,7 +104,7 @@ export class VPCClient extends RegionalServiceClient {
           };
 
           const vpcAttributeReq: DescribeVPCAttributeRequest = {
-            client: this.client,
+            client,
             action: 'DescribeVpcAttribute',
             parameters: vpcAttributeParameters,
           };
@@ -90,14 +118,14 @@ export class VPCClient extends RegionalServiceClient {
         }
 
         totalVpcs = TotalCount;
-      } while (pageNumber * PAGE_SIZE < totalVpcs);
+      } while (pageNumber * VPC_PAGE_SIZE < totalVpcs);
     });
   }
 
   public async iterateNATGateways(
     iteratee: ResourceIteratee<NATGateway>,
   ): Promise<void> {
-    return this.forEachRegion(async (region: string) => {
+    return this.forEachRegion(async (client: AlibabaClient, region: string) => {
       let pageNumber = 0;
       let totalNgws = 0;
 
@@ -106,12 +134,12 @@ export class VPCClient extends RegionalServiceClient {
 
         const parameters: NATGatewayParameters = {
           RegionId: region,
-          PageSize: PAGE_SIZE,
+          PageSize: VPC_PAGE_SIZE,
           PageNumber: pageNumber,
         };
 
         const req: DescribeNATGatewaysRequest = {
-          client: this.client,
+          client,
           action: 'DescribeNatGateways',
           parameters,
         };
@@ -126,14 +154,14 @@ export class VPCClient extends RegionalServiceClient {
         }
 
         totalNgws = TotalCount;
-      } while (pageNumber * PAGE_SIZE < totalNgws);
+      } while (pageNumber * VPC_PAGE_SIZE < totalNgws);
     });
   }
 
   public async iterateVPNGateways(
     iteratee: ResourceIteratee<VPNGateway>,
   ): Promise<void> {
-    return this.forEachRegion(async (region: string) => {
+    return this.forEachRegion(async (client: AlibabaClient, region: string) => {
       let pageNumber = 0;
       let totalVgws = 0;
 
@@ -142,12 +170,12 @@ export class VPCClient extends RegionalServiceClient {
 
         const parameters: DescribeVpnGatewaysParameters = {
           RegionId: region,
-          PageSize: PAGE_SIZE,
+          PageSize: VPC_PAGE_SIZE,
           PageNumber: pageNumber,
         };
 
         const req: DescribeVPNGatewaysRequest = {
-          client: this.client,
+          client,
           action: 'DescribeVpnGateways',
           parameters,
         };
@@ -161,7 +189,7 @@ export class VPCClient extends RegionalServiceClient {
         }
 
         totalVgws = TotalCount;
-      } while (pageNumber * PAGE_SIZE < totalVgws);
+      } while (pageNumber * VPC_PAGE_SIZE < totalVgws);
     });
   }
 }

@@ -1,5 +1,5 @@
 import AlibabaClient from '@alicloud/pop-core';
-import { ResourceIteratee } from '../../../client/client';
+import { ResourceIteratee, ServiceClient } from '../../../client/client';
 import { IntegrationConfig } from '../../../config';
 import {
   ListUsersResponse,
@@ -8,7 +8,6 @@ import {
   ListPoliciesResponse,
 } from './types/response';
 import { User, Group, Role, Policy } from '../types';
-import { RegionalServiceClient } from '../../../client/regionalClient';
 import {
   ListUsersParameters,
   ListGroupsParameters,
@@ -16,10 +15,10 @@ import {
   ListPoliciesParameters,
   RAMRequest,
 } from './types/request';
-import { ECS_REGIONS } from '../../../regions';
 import { IntegrationLogger } from '@jupiterone/integration-sdk-core';
+import { RAM_REQ_TIMEOUT } from '../constants';
 
-export class RAMClient extends RegionalServiceClient {
+export class RAMClient extends ServiceClient {
   private client: AlibabaClient;
   private perPage = 100;
   constructor(config: IntegrationConfig, logger: IntegrationLogger) {
@@ -30,141 +29,85 @@ export class RAMClient extends RegionalServiceClient {
       accessKeySecret: config.accessKeySecret,
       endpoint: 'https://ram.aliyuncs.com',
       apiVersion: '2015-05-01',
+      opts: {
+        timeout: RAM_REQ_TIMEOUT,
+      },
     });
-
-    this.getRegions = (): Promise<string[]> => Promise.resolve(ECS_REGIONS);
   }
 
   public async iterateUsers(iteratee: ResourceIteratee<User>): Promise<void> {
-    let start = true;
-    let marker: string | undefined = '';
-    do {
-      if (start) {
-        start = false;
-        const parameters: ListUsersParameters = {
-          MaxItems: this.perPage,
-        };
+    return this.forEachPage(async (nextToken?: string) => {
+      let parameters: ListUsersParameters = {
+        MaxItems: this.perPage,
+      };
 
-        const req: RAMRequest = {
-          client: this.client,
-          action: 'ListUsers',
-          parameters,
-        };
+      if (nextToken) parameters = { ...parameters, Marker: nextToken };
 
-        const response = await this.request<ListUsersResponse>(req);
-        const users = response.Users.User;
-        marker = response.Marker;
-        for (const user of users) {
-          await iteratee(user);
-        }
-      } else if (marker) {
-        const parameters: ListUsersParameters = {
-          MaxItems: this.perPage,
-          Marker: marker,
-        };
+      const req: RAMRequest = {
+        client: this.client,
+        action: 'ListUsers',
+        parameters,
+      };
 
-        const req: RAMRequest = {
-          client: this.client,
-          action: 'ListUsers',
-          parameters,
-        };
+      const response = await this.request<ListUsersResponse>(req);
+      const users = response.Users.User;
 
-        const response = await this.request<ListUsersResponse>(req);
-        const users = response.Users.User;
-        marker = response.Marker;
-        for (const user of users) {
-          await iteratee(user);
-        }
+      for (const user of users) {
+        await iteratee(user);
       }
-    } while (marker);
+
+      return response.Marker || '';
+    });
   }
 
   public async iterateGroups(iteratee: ResourceIteratee<Group>): Promise<void> {
-    let start = true;
-    let marker: string | undefined = '';
-    do {
-      if (start) {
-        start = false;
-        const parameters: ListGroupsParameters = {
-          MaxItems: this.perPage,
-        };
+    return this.forEachPage(async (nextToken?: string) => {
+      let parameters: ListUsersParameters = {
+        MaxItems: this.perPage,
+      };
 
-        const req: RAMRequest = {
-          client: this.client,
-          action: 'ListGroups',
-          parameters,
-        };
+      if (nextToken) parameters = { ...parameters, Marker: nextToken };
 
-        const response = await this.request<ListGroupsResponse>(req);
-        const groups = response.Groups.Group;
-        marker = response.Marker;
-        for (const group of groups) {
-          await iteratee(group);
-        }
-      } else if (marker) {
-        const parameters: ListUsersParameters = {
-          MaxItems: this.perPage,
-          Marker: marker,
-        };
+      const req: RAMRequest = {
+        client: this.client,
+        action: 'ListGroups',
+        parameters,
+      };
 
-        const req: RAMRequest = {
-          client: this.client,
-          action: 'ListGroups',
-          parameters,
-        };
+      const response = await this.request<ListGroupsResponse>(req);
+      const groups = response.Groups.Group;
 
-        const response = await this.request<ListGroupsResponse>(req);
-        const groups = response.Groups.Group;
-        marker = response.Marker;
-        for (const group of groups) {
-          await iteratee(group);
-        }
+      for (const group of groups) {
+        await iteratee(group);
       }
-    } while (marker);
+
+      return response.Marker || '';
+    });
   }
 
   public async iterateRoles(iteratee: ResourceIteratee<Role>): Promise<void> {
-    let start = true;
-    let marker: string | undefined = '';
-    do {
-      if (start) {
-        start = false;
-        const parameters: ListRolesParameters = {
-          MaxItems: this.perPage,
-        };
+    return this.forEachPage(async (nextToken?: string) => {
+      let parameters: ListUsersParameters = {
+        MaxItems: this.perPage,
+      };
 
-        const req: RAMRequest = {
-          client: this.client,
-          action: 'ListRoles',
-          parameters,
-        };
+      if (nextToken) parameters = { ...parameters, Marker: nextToken };
 
-        const response = await this.request<ListRolesResponse>(req);
-        const roles = response.Roles.Role;
-        marker = response.Marker;
-        for (const role of roles) {
-          await iteratee(role);
-        }
-      } else if (marker) {
-        const parameters: ListUsersParameters = {
-          MaxItems: this.perPage,
-          Marker: marker,
-        };
+      const req: RAMRequest = {
+        client: this.client,
+        action: 'ListRoles',
+        parameters,
+      };
 
-        const req: RAMRequest = {
-          client: this.client,
-          action: 'ListRoles',
-          parameters,
-        };
+      const response = await this.request<ListRolesResponse>(req);
+      const roles = response.Roles.Role;
 
-        const response = await this.request<ListRolesResponse>(req);
-        const roles = response.Roles.Role;
-        marker = response.Marker;
-        for (const role of roles) {
-          await iteratee(role);
-        }
+      for (const role of roles) {
+        await iteratee(role);
       }
-    } while (marker);
+
+      return response.Marker || '';
+    });
   }
 
   public async iteratePoliciesOfUser(
@@ -208,6 +151,7 @@ export class RAMClient extends RegionalServiceClient {
       await iteratee(policy);
     }
   }
+
   public async iteratePoliciesOfRole(
     roleName: string,
     iteratee: ResourceIteratee<Policy>,
@@ -233,49 +177,29 @@ export class RAMClient extends RegionalServiceClient {
     groupName: string,
     iteratee: ResourceIteratee<User>,
   ): Promise<void> {
-    let start = true;
-    let marker: string | undefined = '';
-    do {
-      if (start) {
-        start = false;
-        const parameters: ListUsersParameters = {
-          MaxItems: this.perPage,
-          GroupName: groupName,
-        };
+    return this.forEachPage(async (nextToken?: string) => {
+      let parameters: ListUsersParameters = {
+        MaxItems: this.perPage,
+        GroupName: groupName,
+      };
 
-        const req: RAMRequest = {
-          client: this.client,
-          action: 'ListUsersForGroup',
-          parameters,
-        };
+      if (nextToken) parameters = { ...parameters, Marker: nextToken };
 
-        const response = await this.request<ListUsersResponse>(req);
-        const users = response.Users.User;
-        marker = response.Marker;
-        for (const user of users) {
-          await iteratee(user);
-        }
-      } else if (marker) {
-        const parameters: ListUsersParameters = {
-          MaxItems: this.perPage,
-          GroupName: groupName,
-          Marker: marker,
-        };
+      const req: RAMRequest = {
+        client: this.client,
+        action: 'ListUsersForGroup',
+        parameters,
+      };
 
-        const req: RAMRequest = {
-          client: this.client,
-          action: 'ListUsersForGroup',
-          parameters,
-        };
+      const response = await this.request<ListUsersResponse>(req);
+      const users = response.Users.User;
 
-        const response = await this.request<ListUsersResponse>(req);
-        const users = response.Users.User;
-        marker = response.Marker;
-        for (const user of users) {
-          await iteratee(user);
-        }
+      for (const user of users) {
+        await iteratee(user);
       }
-    } while (marker);
+
+      return response.Marker || '';
+    });
   }
 
   public async iterateUsersOfPolicy(

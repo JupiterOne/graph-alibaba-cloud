@@ -4,7 +4,10 @@ import {
   StepRelationshipMetadata,
 } from '@jupiterone/integration-sdk-core';
 
-export const REQ_TIMEOUT = 20000;
+export const ESS_REQ_TIMEOUT = 20000;
+export const ESS_DEFAULT_ENDPOINT = 'https://ess.aliyuncs.com';
+export const ESS_API_VERSION = '2014-08-28';
+export const ESS_PAGE_SIZE = 50;
 
 export const AutoScalingSteps = {
   FETCH_AUTOSCALING_GROUPS: {

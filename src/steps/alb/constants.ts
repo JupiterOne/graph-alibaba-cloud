@@ -6,9 +6,10 @@ import {
 
 import { VPCEntities } from '../vpc/constants';
 
-export const REQ_TIMEOUT = 20000;
-export const DEFAULT_REGION = 'https://alb.cn-qingdao.aliyuncs.com';
-export const API_VERSION = '2020-06-16';
+export const ALB_REQ_TIMEOUT = 20000;
+export const ALB_DEFAULT_ENDPOINT = 'https://alb.cn-qingdao.aliyuncs.com';
+export const ALB_API_VERSION = '2020-06-16';
+export const ALB_PAGE_SIZE = 50;
 
 export const ALBSteps = {
   FETCH_ALB_LOAD_BALANCERS: {

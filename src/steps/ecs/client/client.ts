@@ -1,45 +1,75 @@
 import AlibabaClient from '@alicloud/pop-core';
 import { ResourceIteratee } from '../../../client/client';
 import { IntegrationConfig } from '../../../config';
-import { DescribeInstancesResponse } from './types/response';
+import {
+  DescribeECSRegionsResponse,
+  DescribeInstancesResponse,
+} from './types/response';
 import { Instance } from '../types';
-import { RegionalServiceClient } from '../../../client/regionalClient';
+import {
+  RegionalServiceClient,
+  RegionList,
+} from '../../../client/regionalClient';
 import { DescribeInstancesParameters, ECSRequest } from './types/request';
-import { ECS_REGIONS } from '../../../regions';
 import { IntegrationLogger } from '@jupiterone/integration-sdk-core';
-import { PAGE_SIZE } from '../../../client/constants';
+import {
+  ECS_API_VERSION,
+  ECS_DEFAULT_ENDPOINT,
+  ECS_PAGE_SIZE,
+  ECS_REQ_TIMEOUT,
+} from '../constants';
 
 export class ECSClient extends RegionalServiceClient {
-  private client: AlibabaClient;
+  private rootClient: AlibabaClient;
 
   constructor(config: IntegrationConfig, logger: IntegrationLogger) {
-    super({ logger });
-
-    this.client = new AlibabaClient({
+    super({
+      logger,
       accessKeyId: config.accessKeyId,
       accessKeySecret: config.accessKeySecret,
-      endpoint: 'https://ecs.aliyuncs.com',
-      apiVersion: '2014-05-26',
+      apiVersion: ECS_API_VERSION,
+      timeout: ECS_REQ_TIMEOUT,
     });
 
-    // ECS does not have an endpoint for returning all regions that support ECS.
-    // Instead, its describeRegions endpoint returns a list of every region.
-    this.getRegions = (): Promise<string[]> => Promise.resolve(ECS_REGIONS);
+    this.rootClient = new AlibabaClient({
+      accessKeyId: config.accessKeyId,
+      accessKeySecret: config.accessKeySecret,
+      endpoint: ECS_DEFAULT_ENDPOINT,
+      apiVersion: ECS_API_VERSION,
+      opts: {
+        timeout: ECS_REQ_TIMEOUT,
+      },
+    });
+  }
+
+  protected override async getRegions(): Promise<RegionList[]> {
+    const {
+      Regions: { Region: regionList },
+    } = await this.request<DescribeECSRegionsResponse>({
+      client: this.rootClient,
+      action: 'DescribeRegions',
+      parameters: {},
+    });
+
+    return regionList.map((r) => ({
+      regionId: r.RegionId,
+      regionEndpoint: r.RegionEndpoint,
+    }));
   }
 
   public async iterateInstances(
     iteratee: ResourceIteratee<Instance>,
   ): Promise<void> {
-    return this.forEachRegion(async (region: string) => {
+    return this.forEachRegion(async (client: AlibabaClient, region: string) => {
       return this.forEachPage(async (nextToken?: string) => {
         const parameters: DescribeInstancesParameters = {
           RegionId: region,
-          PageSize: PAGE_SIZE,
+          PageSize: ECS_PAGE_SIZE,
           NextToken: nextToken,
         };
 
         const req: ECSRequest = {
-          client: this.client,
+          client,
           action: 'DescribeInstances',
           parameters,
         };
@@ -50,7 +80,7 @@ export class ECSClient extends RegionalServiceClient {
           await iteratee(instance);
         }
 
-        return response;
+        return response.NextToken;
       });
     });
   }

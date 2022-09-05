@@ -3,6 +3,9 @@ import {
   StepEntityMetadata,
   StepRelationshipMetadata,
 } from '@jupiterone/integration-sdk-core';
+
+export const RAM_REQ_TIMEOUT = 20000;
+
 export enum RAMSteps {
   FETCH_RAM_USERS = 'fetch-ram-users',
   FETCH_RAM_GROUPS = 'fetch-ram-groups',
