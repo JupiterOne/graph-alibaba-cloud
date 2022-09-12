@@ -19,7 +19,7 @@ questions:
 
  - id: managed-question-alibaba-cloud-public-and-unencrypted-oss-buckets
    title: Which Alibaba-Cloud public oss-buckets are unencrypted?
-   description: Returns a list of public and unencrypted Alibaba-cloud oss buckets. 
+   description: Returns a list of public and unencrypted Alibaba-Cloud oss buckets. 
    queries:
      - name: Alibaba-Cloud Public and Unencrypted OSS Buckets 
        resultsAre: BAD
