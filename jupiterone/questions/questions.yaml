@@ -9,7 +9,7 @@ questions:
      - name: Alibaba-Cloud ECS Instances With Application Load Balancing
        resultsAre: INFORMATIVE
        query: |
-         FIND UNIQUE alibaba_cloud_ecs_instance 
+         FIND alibaba_cloud_ecs_instance 
            THAT HAS alibaba_cloud_vpc
            THAT !HAS alibaba_cloud_autoscaling_group
            THAT HAS alibaba_cloud_alb_load_balancer
@@ -24,7 +24,7 @@ questions:
      - name: Alibaba-Cloud Public and Unencrypted OSS Buckets 
        resultsAre: BAD
        query: |
-         FIND UNIQUE alibaba_cloud_oss_bucket WITH classification ~= "public" AND encrypted != true
+         FIND alibaba_cloud_oss_bucket WITH classification ~= "public" AND encrypted != true
    tags:
      - alibaba-cloud
      - storage
