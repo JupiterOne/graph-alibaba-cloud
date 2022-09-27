@@ -1,15 +1,30 @@
 ---
-sourceId: managed:template
+sourceId: managed:alibaba-cloud
 integrationDefinitionId: '${integration_definition_id}'
-questions: []
-  # - id: integration-question-template-replace-me
-  #   title: What kinds of questions will this integration support?
-  #   description:
-  #     TODO Every integration should contribute questions! Please be carefule
-  #     to replace this before deploying the integration to JupiterOne.
-  #   queries:
-  #     - name: good
-  #       query: |
-  #         find * with _integrationDefinitionId = '${integration_definition_id}'
-  #   tags:
-  #     - template
+questions: 
+ - id: managed-question-alibaba-cloud-ecs-instance-with-alibaba-cloud-application-load-balancing
+   title: Which Alibaba-Cloud ECS instances use Alibaba-Cloud application load balancers?
+   description: Returns a list of Alibaba-cloud instances with Alibaba-Cloud application load balancing. 
+   queries:
+     - name: Alibaba-Cloud ECS Instances With Application Load Balancing
+       resultsAre: INFORMATIVE
+       query: |
+         FIND alibaba_cloud_ecs_instance 
+           THAT HAS alibaba_cloud_vpc
+           THAT !HAS alibaba_cloud_autoscaling_group
+           THAT HAS alibaba_cloud_alb_load_balancer
+   tags:
+     - alibaba-cloud
+     - alb
+
+ - id: managed-question-alibaba-cloud-public-and-unencrypted-oss-buckets
+   title: Which Alibaba-Cloud public object storage service buckets are unencrypted?
+   description: Returns a list of public and unencrypted Alibaba-Cloud oss buckets. 
+   queries:
+     - name: Alibaba-Cloud Public and Unencrypted OSS Buckets 
+       resultsAre: BAD
+       query: |
+         FIND alibaba_cloud_oss_bucket WITH classification ~= "public" AND encrypted != true
+   tags:
+     - alibaba-cloud
+     - storage
