@@ -2,6 +2,10 @@
   "name": "@jupiterone/graph-alibaba-cloud",
   "version": "1.1.0",
   "description": "A graph conversion tool for Alibaba Cloud",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JupiterOne/graph-alibaba-cloud"
+  },
   "license": "MPL-2.0",
   "main": "src/index.js",
   "types": "src/index.d.ts",
